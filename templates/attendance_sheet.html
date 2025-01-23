@@ -1,0 +1,51 @@
+{% extends 'index.html' %}
+{% block content %}
+<div class="container-fluid">
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title fw-semibold mb-4">Attendance For All Employees</h5>
+                {% for message in messages %}
+                <div class="alert {{ message.tags }}" role="alert">
+                 {{message}}
+                </div>
+                {% endfor %}
+            </div>
+            <div class="card mb-0">
+                <div class="card-body p-4">
+                    <table id="attendanceTable" class="table table-striped table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Employee</th>
+                                <th>Total Attendance</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for employee in employees %}
+                            <tr>
+                                <td>{{ employee.first_name }}</td>
+                                <td>{{ employee.attendance|length }}</td>
+                                <td><a href="{%url 'employee_attendance_view' employee.id %}" class="action-btn">View</a></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        $('#attendanceTable').DataTable();
+    });
+</script>
+
+
+
+{% endblock %}

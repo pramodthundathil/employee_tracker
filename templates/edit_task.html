@@ -1,0 +1,61 @@
+{% extends 'index.html' %}
+{% block content %}
+<div class="container-fluid">
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title fw-semibold mb-4">EDIT TASKS</h5>
+                <p><sup>** Change</sup></p>
+                {% for message in messages %}
+                <div class="alert {{ message.tags }}" role="alert">
+                 {{message}}
+                </div>
+                {% endfor %}
+
+                <div class="card mb-0">
+                    <div class="card-body p-4">
+
+                        <form method="post" enctype="text/plain">
+                            {% csrf_token %}
+
+                            {{form.as_p}}
+
+                            <br> 
+                            <button type="submit" class="btn btn-info">Update</button>
+                        </form>
+
+
+                        <h5 class="card-title fw-semibold mb-4">TASK UPDATES</h5>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">Update Text</th>
+                        <th scope="col">Files</th>
+                        <th scope="col">Created At</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for update in task.updates.all %}
+                    <tr>
+                        <td>{{ update.update_text }}</td>
+                        <td>
+                            {% if update.files %}
+                            <a href="{{ update.files.url }}">Download</a>
+                            {% else %}
+                            No files
+                            {% endif %}
+                        </td>
+                        <td>{{ update.created_at }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

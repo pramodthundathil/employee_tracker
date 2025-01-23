@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Salary Slip</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+        }
+        .salary-slip {
+            border: 1px solid #000;
+            padding: 20px;
+            width: 600px;
+            margin: auto;
+        }
+        .header {
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .details, .salary-details {
+            margin-bottom: 20px;
+        }
+        .details td, .salary-details td {
+            padding: 5px;
+        }
+        .details td:first-child, .salary-details td:first-child {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="salary-slip">
+        <div class="header">
+            Salary Slip
+        </div>
+        <div class="details">
+            <table>
+                <tr>
+                    <td>Employee Name:</td>
+                    <td>{{ employee.first_name }} {{ employee.last_name }}</td>
+                </tr>
+                <tr>
+                    <td>Employee ID:</td>
+                    <td>{{ employee.id }}</td>
+                </tr>
+                <tr>
+                    <td>Month:</td>
+                    <td>{{ salary.month }}</td>
+                </tr>
+                <tr>
+                    <td>Year:</td>
+                    <td>{{ salary.year }}</td>
+                </tr>
+                <tr>
+                    <td>Date:</td>
+                    <td>{{ salary.date|date:"d M Y" }}</td>
+                </tr>
+            </table>
+        </div>
+        <div class="salary-details">
+            <table>
+                <tr>
+                    <td>Salary:</td>
+                    <td>${{ salary.salary }}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

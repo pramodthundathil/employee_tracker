@@ -1,0 +1,61 @@
+{% extends 'index.html' %}
+{% block content %}
+<div class="container-fluid">
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title fw-semibold mb-4">Leave {{leave}}</h5>
+                <p><sup>** Change The data For Employee</sup></p>
+                {% for message in messages %}
+                <div class="alert {{ message.tags }}" role="alert">
+                 {{message}}
+                </div>
+                {% endfor %}
+
+                <div class="card mb-0">
+                    <div class="card-body p-4">
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="employeeName" class="form-label">Employee Name</label>
+                                <input type="text" class="form-control" id="employeeName" value="{{ leave.employee_name }}" readonly>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="leaveType" class="form-label">Leave Type</label>
+                                <input type="text" class="form-control" id="leaveType" value="{{ leave.leave_type }}" readonly>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="startDate" class="form-label">Start Date</label>
+                                <input type="text" class="form-control" id="startDate" value="{{ leave.start_date }}" readonly>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="endDate" class="form-label">End Date</label>
+                                <input type="text" class="form-control" id="endDate" value="{{ leave.end_date }}" readonly>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-12">
+                                <label for="reason" class="form-label">Reason</label>
+                                <textarea class="form-control" id="reason" rows="3" readonly>{{ leave.reason }}</textarea>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <a type="button" href="{%url 'approve_leave' leave.id %}" class="btn btn-success w-100">Approve</a>
+                            </div>
+                            <div class="col-md-6">
+                                <a type="button" href="{%url 'reject_leave' leave.id %}" class="btn btn-danger w-100">Reject</a>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        
+        </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,48 @@
+{% extends 'index.html' %}
+{% block content %}
+<div class="container-fluid">
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title fw-semibold mb-4">EMPLOYEE LEAVE APPLICATIONS</h5>
+                {% for message in messages %}
+                <div class="alert {{ message.tags }}" role="alert">
+                 {{message}}
+                </div>
+                {% endfor %}
+            </div>
+            <div class="card mb-0">
+                <div class="card-body p-4">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">Employee</th>
+                            <th scope="col">Leave Type</th>
+                            <th scope="col">Start Date</th>
+                            <th scope="col">End Date</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for leave in leaves %}
+                        <tr>
+                            <td>{{ leave.employee.username }}</td>
+                            <td>{{ leave.leave_type }}</td>
+                            <td>{{ leave.start_date }}</td>
+                            <td>{{ leave.end_date }}</td>
+                            <td>{{ leave.status }}</td>
+                            <td>
+                                <a href="{% url 'view_leave' leave.id %}" class="btn btn-primary btn-sm">View</a>
+                                <a href="{% url 'delete_leave' leave.id %}" class="btn btn-danger btn-sm">Delete</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

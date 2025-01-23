@@ -1,0 +1,77 @@
+{% extends 'employee/index.html' %}
+{% block content %}
+div class="container-fluid">
+<div class="container-fluid">
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title fw-semibold mb-4">MY ATTENDANCE</h5>
+
+            <a href="{%url 'mark_attendance' %}" class="btn btn-info">MARK TODAYS ATTENDANCE</a>
+            {% for message in messages %}
+            <div class="alert {{ message.tags }}" role="alert">
+                {{message}}
+            </div>
+            {% endfor %}
+        </div>
+        <div class="card mb-0">
+            <div class="card-body p-4">
+
+                <div class="calendar">
+                    {% for month in months %}
+                    <div class="month">
+                        <h3>{{ month.name }}</h3>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Sun</th>
+                                    <th>Mon</th>
+                                    <th>Tue</th>
+                                    <th>Wed</th>
+                                    <th>Thu</th>
+                                    <th>Fri</th>
+                                    <th>Sat</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for week in month.weeks %}
+                                <tr>
+                                    {% for day in week %}
+                                    <td class="{% if day is not none %}
+                                        {% if day.is_sunday %}bg-orange{% elif day.is_past_day and not day.attendance_marked %}bg-red{% elif day.attendance_marked %}bg-green{% endif %}
+                                        {% endif %}">
+                                        {% if day is not none %}{{ day.date }}{% endif %}
+                                    </td>
+                                    {% endfor %}
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% endfor %}
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<style>
+    .bg-green {
+        background-color: green !important;
+        color: white;
+    }
+
+    .bg-red {
+        background-color: red !important;
+        color: white;
+    }
+
+    .bg-orange {
+        background-color: orange !important;
+        color: white;
+    }
+</style>
+
+{% endblock %}

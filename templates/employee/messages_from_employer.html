@@ -1,0 +1,46 @@
+{% extends 'employee/index.html' %}
+{% block content %}
+div class="container-fluid">
+<div class="container-fluid">
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title fw-semibold mb-4">Message From Employer</h5>
+
+            
+            {% for message in messages %}
+            <div class="alert {{ message.tags }}" role="alert">
+                {{message}}
+            </div>
+            {% endfor %}
+        </div>
+        <div class="card mb-0">
+            <div class="card-body p-4">
+
+                <table id="attendanceTable" class="table table-striped table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Message</th>
+                            <th>Date </th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for message in mess %}
+                        <tr>
+                            <td>{{ message.message }}</td>
+                            <td>{{ message.date }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+{% endblock %}
