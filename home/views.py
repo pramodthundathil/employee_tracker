@@ -422,25 +422,30 @@ def view_task(request, pk):
 
 from django.shortcuts import render
 from django.db.models import Count
+from django.core.serializers.json import DjangoJSONEncoder
+import json
 
+from django.views.decorators.clickjacking import xframe_options_exempt
 
+@xframe_options_exempt
 def task_analytics(request):
     # Total tasks assigned to each employee
     tasks_by_employee = Task.objects.values('employee__username').annotate(total_tasks=Count('id'))
 
     # Total updates for each task
-    updates_per_task = Task.objects.annotate(total_updates=Count('updates'))
+    updates_per_task = Task.objects.annotate(total_updates=Count('updates')).values('title', 'total_updates')
 
     # Tasks created over time (grouped by date)
     tasks_over_time = Task.objects.extra(select={'date_created': 'DATE(created_at)'}).values('date_created').annotate(total_tasks=Count('id')).order_by('date_created')
 
-    # Prepare data for Chart.js
+    # Serialize data to JSON
     context = {
-        'tasks_by_employee': list(tasks_by_employee),
-        'updates_per_task': list(updates_per_task),
-        'tasks_over_time': list(tasks_over_time),
+        'tasks_by_employee': json.dumps(list(tasks_by_employee), cls=DjangoJSONEncoder),
+        'updates_per_task': json.dumps(list(updates_per_task), cls=DjangoJSONEncoder),
+        'tasks_over_time': json.dumps(list(tasks_over_time), cls=DjangoJSONEncoder),
     }
     return render(request, 'analytics.html', context)
+
 
 
 

@@ -1,12 +1,6 @@
 {% extends 'index.html' %}
 
 {% block content %}
-
-
-
-
-
-
 <div class="container-fluid">
     <div class="container-fluid">
         <div class="card">
@@ -28,11 +22,16 @@
         </div>
     </div>
 </div>
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    // Tasks by Employee
+    // Parse data from the context
+    const tasksByEmployeeData = JSON.parse('{{ tasks_by_employee|safe }}');
+    const updatesPerTaskData = JSON.parse('{{ updates_per_task|safe }}');
+    const tasksOverTimeData = JSON.parse('{{ tasks_over_time|safe }}');
+
+    // Tasks by Employee Chart
     const tasksByEmployeeCtx = document.getElementById('tasksByEmployeeChart').getContext('2d');
-    const tasksByEmployeeData = {{ tasks_by_employee| safe }};
     new Chart(tasksByEmployeeCtx, {
         type: 'bar',
         data: {
@@ -55,9 +54,8 @@
         }
     });
 
-    // Updates per Task
+    // Updates per Task Chart
     const updatesPerTaskCtx = document.getElementById('updatesPerTaskChart').getContext('2d');
-    const updatesPerTaskData = {{ updates_per_task| safe }};
     new Chart(updatesPerTaskCtx, {
         type: 'bar',
         data: {
@@ -80,9 +78,8 @@
         }
     });
 
-    // Tasks Over Time
+    // Tasks Over Time Chart
     const tasksOverTimeCtx = document.getElementById('tasksOverTimeChart').getContext('2d');
-    const tasksOverTimeData = {{ tasks_over_time| safe }};
     new Chart(tasksOverTimeCtx, {
         type: 'line',
         data: {
@@ -105,9 +102,4 @@
         }
     });
 </script>
-
-
 {% endblock %}
-
-
-
