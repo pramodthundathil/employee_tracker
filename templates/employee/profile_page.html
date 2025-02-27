@@ -19,7 +19,9 @@
             <div class="row">
                 <div class="col-md-4">
                     <div class="text-center">
+                        {% if user.profile_pic %}
                         <img src="{{ user.profile_pic.url }}" width="200px" height="200px" style="object-fit: cover;" class="rounded-circle img-fluid" alt="Profile Picture">
+                        {% endif %}
                     </div>
                 </div>
                 <div class="col-md-8">

@@ -24,16 +24,16 @@
                                     <th>Employee</th>
                                     <th>Feedback</th>
                                     <th>Date</th>
-                                    <th>Approved</th>
+                                 
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for feedback in feedbacks %}
+                                {% for feedback in feedback %}
                                 <tr>
                                     <td>{{ feedback.employee.username }}</td>
                                     <td>{{ feedback.feedback }}</td>
                                     <td>{{ feedback.date }}</td>
-                                    <td>{{ feedback.approve }}</td>
+                                   
                                 </tr>
                                 {% endfor %}
                             </tbody>

@@ -7,17 +7,35 @@
             <div class="card-body">
                 <h1>Task Analytics</h1>
 
-                <!-- Chart for Tasks by Employee -->
-                <h3>Tasks by Employee</h3>
-                <canvas id="tasksByEmployeeChart" width="400" height="200"></canvas>
+                <!-- Combined Chart -->
+                <h3>Task Analytics Overview</h3>
+                <canvas id="combinedTaskAnalyticsChart" width="400" height="200"></canvas>
+            </div>
+            <div class="card-body mt-5">
+                <h3>Employee Satisfaction summery</h3>
 
-                <!-- Chart for Updates per Task -->
-                <h3>Updates per Task</h3>
-                <canvas id="updatesPerTaskChart" width="400" height="200"></canvas>
+                <br><br>
+                <table border="1" class="table">
+                    <thead class="bg-primary text-white">
+                        <tr>
+                            <th>Employee</th>
+                            <th>Positive %</th>
+                            <th>Neutral %</th>
+                            <th>Negative %</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for employee, data in satisfaction_summary.items %}
+                        <tr>
+                            <td>{{ employee }}</td>
+                            <td>{{ data.Positive }}</td>
+                            <td>{{ data.Neutral }}</td>
+                            <td>{{ data.Negative }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
 
-                <!-- Chart for Tasks Over Time -->
-                <h3>Tasks Over Time</h3>
-                <canvas id="tasksOverTimeChart" width="400" height="200"></canvas>
             </div>
         </div>
     </div>
@@ -30,73 +48,72 @@
     const updatesPerTaskData = JSON.parse('{{ updates_per_task|safe }}');
     const tasksOverTimeData = JSON.parse('{{ tasks_over_time|safe }}');
 
-    // Tasks by Employee Chart
-    const tasksByEmployeeCtx = document.getElementById('tasksByEmployeeChart').getContext('2d');
-    new Chart(tasksByEmployeeCtx, {
-        type: 'bar',
-        data: {
-            labels: tasksByEmployeeData.map(item => item.employee__username),
-            datasets: [{
-                label: 'Total Tasks',
-                data: tasksByEmployeeData.map(item => item.total_tasks),
-                backgroundColor: 'rgba(75, 192, 192, 0.6)',
-                borderColor: 'rgba(75, 192, 192, 1)',
-                borderWidth: 1
-            }]
-        },
-        options: {
-            responsive: true,
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            }
-        }
-    });
+    // Extract data for the combined chart
+    const employeeLabels = tasksByEmployeeData.map(item => item.employee__username);
+    const taskCountData = tasksByEmployeeData.map(item => item.total_tasks);
 
-    // Updates per Task Chart
-    const updatesPerTaskCtx = document.getElementById('updatesPerTaskChart').getContext('2d');
-    new Chart(updatesPerTaskCtx, {
-        type: 'bar',
-        data: {
-            labels: updatesPerTaskData.map(item => item.title),
-            datasets: [{
-                label: 'Total Updates',
-                data: updatesPerTaskData.map(item => item.total_updates),
-                backgroundColor: 'rgba(153, 102, 255, 0.6)',
-                borderColor: 'rgba(153, 102, 255, 1)',
-                borderWidth: 1
-            }]
-        },
-        options: {
-            responsive: true,
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            }
-        }
-    });
+    const taskTitleLabels = updatesPerTaskData.map(item => item.title);
+    const updatesCountData = updatesPerTaskData.map(item => item.total_updates);
 
-    // Tasks Over Time Chart
-    const tasksOverTimeCtx = document.getElementById('tasksOverTimeChart').getContext('2d');
-    new Chart(tasksOverTimeCtx, {
-        type: 'line',
+    const taskOverTimeDates = tasksOverTimeData.map(item => item.date_created);
+    const tasksOverTimeCount = tasksOverTimeData.map(item => item.total_tasks);
+
+    // Create Combined Chart
+    const combinedChartCtx = document.getElementById('combinedTaskAnalyticsChart').getContext('2d');
+    new Chart(combinedChartCtx, {
+        type: 'bar', // Default type is bar, mixed types will be used
         data: {
-            labels: tasksOverTimeData.map(item => item.date_created),
-            datasets: [{
-                label: 'Tasks Created',
-                data: tasksOverTimeData.map(item => item.total_tasks),
-                backgroundColor: 'rgba(255, 159, 64, 0.6)',
-                borderColor: 'rgba(255, 159, 64, 1)',
-                borderWidth: 2
-            }]
+            labels: [...new Set([...employeeLabels, ...taskTitleLabels, ...taskOverTimeDates])],
+            datasets: [
+                {
+                    label: 'Total Tasks by Employee',
+                    data: taskCountData,
+                    backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1,
+                    type: 'bar'
+                },
+                {
+                    label: 'Updates per Task',
+                    data: updatesCountData,
+                    backgroundColor: 'rgba(153, 102, 255, 0.6)',
+                    borderColor: 'rgba(153, 102, 255, 1)',
+                    borderWidth: 1,
+                    type: 'bar'
+                },
+                {
+                    label: 'Tasks Over Time',
+                    data: tasksOverTimeCount,
+                    backgroundColor: 'rgba(255, 159, 64, 0.6)',
+                    borderColor: 'rgba(255, 159, 64, 1)',
+                    borderWidth: 2,
+                    type: 'line',
+                    tension: 0.4
+                }
+            ]
         },
         options: {
             responsive: true,
             scales: {
+                x: {
+                    stacked: false,
+                    title: {
+                        display: true,
+                        text: 'Labels (Employees, Tasks, Dates)'
+                    }
+                },
                 y: {
-                    beginAtZero: true
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Count'
+                    }
+                }
+            },
+            plugins: {
+                tooltip: {
+                    mode: 'index',
+                    intersect: false
                 }
             }
         }

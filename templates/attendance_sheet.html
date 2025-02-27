@@ -25,7 +25,7 @@
                             {% for employee in employees %}
                             <tr>
                                 <td>{{ employee.first_name }}</td>
-                                <td>{{ employee.attendance|length }}</td>
+                                <td>{{ employee.attendance.all|length }}</td>
                                 <td><a href="{%url 'employee_attendance_view' employee.id %}" class="action-btn">View</a></td>
                             </tr>
                             {% endfor %}

@@ -427,6 +427,64 @@ import json
 
 from django.views.decorators.clickjacking import xframe_options_exempt
 
+
+from textblob import TextBlob
+from django.db.models import Avg
+
+# Analyze feedback sentiment
+def analyze_feedback_sentiment():
+    feedback_data = FeedBack.objects.all()  # Fetch all feedbacks
+    results = []
+
+    for feedback in feedback_data:
+        analysis = TextBlob(feedback.feedback)
+        sentiment_score = analysis.sentiment.polarity  # Sentiment score (-1 to 1)
+
+        print(sentiment_score,"---------------------------------------------------------------")
+        
+        # Categorize sentiment
+        if sentiment_score > 0.1:
+            sentiment = "Positive"
+        elif sentiment_score < -0.1:
+            sentiment = "Negative"
+        else:
+            sentiment = "Neutral"
+
+        # Append result
+        results.append({
+            "employee": feedback.employee.username,
+            "feedback": feedback.feedback,
+            "sentiment": sentiment,
+            "score": sentiment_score
+        })
+
+    return results
+
+from collections import defaultdict
+
+def employee_satisfaction():
+    feedback_results = analyze_feedback_sentiment()
+    satisfaction_data = defaultdict(lambda: {"Positive": 0, "Negative": 0, "Neutral": 0})
+
+    # Count feedback sentiments per employee
+    for result in feedback_results:
+        satisfaction_data[result["employee"]][result["sentiment"]] += 1
+
+    # Calculate satisfaction level
+    satisfaction_summary = {}
+    for employee, sentiments in satisfaction_data.items():
+        total_feedback = sum(sentiments.values())
+        satisfaction_summary[employee] = {
+            "Positive": (sentiments["Positive"] / total_feedback) * 100,
+            "Negative": (sentiments["Negative"] / total_feedback) * 100,
+            "Neutral": (sentiments["Neutral"] / total_feedback) * 100,
+        }
+
+        print(satisfaction_summary)
+
+    return satisfaction_summary
+
+
 @xframe_options_exempt
 def task_analytics(request):
     # Total tasks assigned to each employee
@@ -437,14 +495,18 @@ def task_analytics(request):
 
     # Tasks created over time (grouped by date)
     tasks_over_time = Task.objects.extra(select={'date_created': 'DATE(created_at)'}).values('date_created').annotate(total_tasks=Count('id')).order_by('date_created')
+    satisfaction_summary = employee_satisfaction()
 
     # Serialize data to JSON
     context = {
         'tasks_by_employee': json.dumps(list(tasks_by_employee), cls=DjangoJSONEncoder),
         'updates_per_task': json.dumps(list(updates_per_task), cls=DjangoJSONEncoder),
         'tasks_over_time': json.dumps(list(tasks_over_time), cls=DjangoJSONEncoder),
+        "satisfaction_summary":satisfaction_summary
     }
     return render(request, 'analytics.html', context)
+
+
 
 
 

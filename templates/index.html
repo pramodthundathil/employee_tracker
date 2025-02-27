@@ -169,7 +169,7 @@
       <!--  Header End -->
       {% block content %}
 
-      <iframe src="http://127.0.0.1:8000/task_analytics" frameborder="0" width="90%" height="600px" >
+      <iframe src="" id="task-iframe" frameborder="0" width="90%" height="600px"></iframe>
 
       </iframe>
   
@@ -188,6 +188,15 @@
   <script src="{%static 'assets/libs/apexcharts/dist/apexcharts.min.js' %}"></script>
   <script src="{%static 'assets/libs/simplebar/dist/simplebar.js' %}"></script>
   <script src="{%static 'assets/js/dashboard.js' %}"></script>
+
+  <script>
+    // Get the current domain and append the path
+    var currentDomain = window.location.origin; // This gets the protocol, domain, and port (if available)
+    var iframeSrc = currentDomain + "/task_analytics";
+    
+    // Set the iframe src dynamically
+    document.getElementById("task-iframe").src = iframeSrc;
+  </script>
 </body>
 
 </html>
